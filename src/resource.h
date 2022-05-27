@@ -43,7 +43,7 @@ namespace cg
 	template<typename T>
 	inline resource<T>::resource(size_t x_size, size_t y_size)
 	{
-		stride = y_size;
+		stride = x_size;
 		data.resize(y_size * x_size);
 
 	}
