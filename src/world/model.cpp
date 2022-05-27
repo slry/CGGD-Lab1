@@ -187,7 +187,7 @@ cg::world::model::get_vertex_buffers() const
 const std::vector<std::shared_ptr<cg::resource<unsigned int>>>&
 cg::world::model::get_index_buffers() const
 {
-	// TODO: Lab 1.03. Using `tinyobjloader` implement `load_obj`, `get_vertex_buffers`, `get_index_buffers` methods of `cg::world::model` class
+	return index_buffers;
 }
 
 std::vector<std::filesystem::path>
