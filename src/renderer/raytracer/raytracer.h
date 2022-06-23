@@ -170,18 +170,19 @@ namespace cg::renderer
 		{
 			for (int y = 0; y < height; y++)
 			{
-				float u = (2.f*x)/static_cast<float>(width-1) - 1.f;
-				float v = (2.f*y)/static_cast<float>(height-1) - 1.f;
+				float u = (2.f * x) / static_cast<float>(width - 1) - 1.f;
+				float v = (2.f * y) / static_cast<float>(height - 1) - 1.f;
 				u *= static_cast<float>(width) / static_cast<float>(height);
 
-				float3 ray_direction = direction + u*right - v*up;
+				float3 ray_direction = direction + u * right - v * up;
 				ray ray{position, ray_direction};
 
 				payload payload = trace_ray(ray, depth);
 				render_target->item(x, y) = RT::from_color(payload.color);
 			}
-		// TODO: Lab 2.06. Add `history` resource in `raytracer` class
-		// TODO: Lab 2.06. Implement TAA in `ray_generation` method of `raytracer` class
+			// TODO: Lab 2.06. Add `history` resource in `raytracer` class
+			// TODO: Lab 2.06. Implement TAA in `ray_generation` method of `raytracer` class
+		}
 	}
 
 	template<typename VB, typename RT>
