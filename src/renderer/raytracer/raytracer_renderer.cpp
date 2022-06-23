@@ -7,6 +7,7 @@
 
 void cg::renderer::ray_tracing_renderer::init()
 {
+
 	model = std::make_shared<cg::world::model>();
 	model->load_obj(settings->model_path);
 
@@ -26,21 +27,21 @@ void cg::renderer::ray_tracing_renderer::init()
 	camera->set_z_near(settings->camera_z_near);
 	camera->set_z_far(settings->camera_z_far);
 
-	raytracer = std::make_shared<cg::renderer::raytracer<cg::vertex, cg::unsigned_color>>();
+	render_target = std::make_shared<cg::resource<cg::unsigned_color>>(
+			settings->width,settings->height
+	);
+
+	raytracer = std::make_shared<cg::renderer::raytracer<cg::vertex,cg::unsigned_color>>();
+
 	raytracer->set_render_target(render_target);
 	raytracer->set_viewport(settings->width, settings->height);
 	raytracer->set_vertex_buffers(model->get_vertex_buffers());
 	raytracer->set_index_buffers(model->get_index_buffers());
+	lights.push_back({float3 {0.f, 1.8f, 0.f }, float3{1.0f, 1.0f, 1.0f}});
 
-	lights.push_back({float3 {0.5f, 1.58f, - 0.03f }, float3{0.78f, 0.78f, 0.78f}});
-	lights.push_back({float3 {-0.5f, 1.58f, - 0.03f }, unsigned_color{125, 54,200}.to_float3()});
-	lights.push_back({float3 {0.f, 1.08f, - 0.03f }, float3{0.1f, 0.98f, 0.58f}});
+
 	shadow_raytracer = std::make_shared<cg::renderer::raytracer<cg::vertex, cg::unsigned_color>>();
-	shadow_raytracer->set_vertex_buffers(model->get_vertex_buffers());
-	shadow_raytracer->set_index_buffers(model->get_index_buffers());
 
-	// TODO: Lab 2.03. Add light information to lights array of ray_tracing_renderer
-	// TODO: Lab 2.04. Initialize `shadow_raytracer` in `ray_tracing_renderer`
 }
 
 void cg::renderer::ray_tracing_renderer::destroy() {}
@@ -49,14 +50,14 @@ void cg::renderer::ray_tracing_renderer::update() {}
 
 void cg::renderer::ray_tracing_renderer::render()
 {
-
 	raytracer->clear_render_target({0,0,0});
 
 	raytracer->miss_shader = [](const ray& ray) {
 		payload payload{};
-		payload.color = {0.f, 0.f, (ray.direction.y + 1.f) * 0.5f};
+		payload.color = {0.f, 0.f, 0};
 		return payload;
 	};
+
 
 	raytracer->closest_hit_shader = [&](const ray& ray, payload& payload, const triangle<cg::vertex>& triangle, size_t depth) {
 		float3 position = ray.position + ray.direction * payload.t;
@@ -66,19 +67,23 @@ void cg::renderer::ray_tracing_renderer::render()
 
 
 
+
+
+
+
 		float3 result_color = triangle.emissive;
 
 		for(auto& light: lights)
 		{
 			cg::renderer::ray to_light(position, light.position - position);
 
-			result_color = triangle.diffuse * light.color * std::max(dot(normal, to_light.direction), 0.f);
 			auto shadow_payload = shadow_raytracer->trace_ray(to_light, 1, length(light.position - position));
 
 			if(shadow_payload.t < 0.f) {
 				result_color += triangle.diffuse * light.color * std::max(dot(normal, to_light.direction), 0.f);
 			}
 		}
+
 		payload.color = cg::color::from_float3(result_color);
 		return payload;
 	};
@@ -98,7 +103,6 @@ void cg::renderer::ray_tracing_renderer::render()
 	{
 		return payload;
 	};
-
 	auto start = std::chrono::high_resolution_clock::now();
 	raytracer->ray_generation(
 			camera->get_position(), camera->get_direction(),
@@ -111,8 +115,5 @@ void cg::renderer::ray_tracing_renderer::render()
 	std::cout << "Raytracing took " << raytracing_duration.count() << " ms\n";
 
 	cg::utils::save_resource(*render_target, settings->result_path);
-	// TODO: Lab 2.03. Adjust closest_hit_shader of raytracer to implement Lambertian shading model
-	// TODO: Lab 2.04. Define any_hit_shader and miss_shader for shadow_raytracer
-	// TODO: Lab 2.04. Adjust closest_hit_shader of raytracer to cast shadows rays and to ignore occluded lights
-	// TODO: Lab 2.05. Adjust ray_tracing_renderer class to build the acceleration structure
+
 }

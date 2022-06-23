@@ -267,7 +267,6 @@ namespace cg::renderer
 			return closest_hit_shader(ray, closest_hit_payload, *closest_triangle, depth);
 
 		return miss_shader(ray);
-		// TODO: Lab 2.05. Adjust trace_ray method of raytracer class to traverse the acceleration structure
 	}
 
 	template<typename VB, typename RT>
