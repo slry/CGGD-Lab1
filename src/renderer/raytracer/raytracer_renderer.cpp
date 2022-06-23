@@ -84,7 +84,7 @@ void cg::renderer::ray_tracing_renderer::render()
 	};
 
 	raytracer->build_acceleration_structure();
-	shadow_raytracer->build_acceleration_structure();
+	shadow_raytracer->acceleration_structures = raytracer->acceleration_structures;
 
 	shadow_raytracer->miss_shader = [](const ray& ray)
 	{
