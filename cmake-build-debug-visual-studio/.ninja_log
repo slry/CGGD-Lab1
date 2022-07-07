@@ -1,0 +1,10 @@
+# ninja log v5
+40	4589	6789154204054449	CMakeFiles/DirectX12.dir/src/utils/resource_utils.cpp.obj	37f532fd40ca266f
+35	4604	6789154204054449	CMakeFiles/DirectX12.dir/src/world/camera.cpp.obj	e2d3eb6a4942c65b
+28	5660	6789154214679458	CMakeFiles/DirectX12.dir/src/world/model.cpp.obj	140dc21e9aaa8495
+21	5686	6789154215148214	CMakeFiles/DirectX12.dir/src/settings.cpp.obj	935c50414bd4c29d
+17	6208	6789154220460722	CMakeFiles/DirectX12.dir/src/utils/window.cpp.obj	e375bc942b12b52e
+1	6213	6789154220460722	CMakeFiles/DirectX12.dir/src/win_main.cpp.obj	a3750f236848c64c
+32	7260	6789154230929460	CMakeFiles/DirectX12.dir/src/renderer/renderer.cpp.obj	898f981ef58e26ec
+24	7443	6789154232648208	CMakeFiles/DirectX12.dir/src/renderer/dx12/dx12_renderer.cpp.obj	db7223d6fa82bd62
+7447	8917	6789154247335683	DirectX12.exe	5a8d44eff8e85723

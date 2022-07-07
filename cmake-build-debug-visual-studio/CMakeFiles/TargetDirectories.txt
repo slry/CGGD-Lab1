@@ -1,0 +1,5 @@
+D:/Projects/C and C++ Programming/C++ Projects/CGGD-Lab1/cmake-build-debug-visual-studio/CMakeFiles/edit_cache.dir
+D:/Projects/C and C++ Programming/C++ Projects/CGGD-Lab1/cmake-build-debug-visual-studio/CMakeFiles/Rasterization.dir
+D:/Projects/C and C++ Programming/C++ Projects/CGGD-Lab1/cmake-build-debug-visual-studio/CMakeFiles/DirectX12.dir
+D:/Projects/C and C++ Programming/C++ Projects/CGGD-Lab1/cmake-build-debug-visual-studio/CMakeFiles/Raytracing.dir
+D:/Projects/C and C++ Programming/C++ Projects/CGGD-Lab1/cmake-build-debug-visual-studio/CMakeFiles/rebuild_cache.dir
