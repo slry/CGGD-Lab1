@@ -290,7 +290,13 @@ void cg::renderer::dx12_renderer::load_assets()
 			&read_range,
 			reinterpret_cast<void**>(&constant_buffer_data_begin)
 					));
-	// TODO Lab 3.04. Create a descriptor heap for a constant buffer
+
+	cbv_srv_heap.create_heap(
+			device,
+			D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+			1,
+			D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE
+	);
 	// TODO Lab 3.04. Create a constant buffer view
 }
 
