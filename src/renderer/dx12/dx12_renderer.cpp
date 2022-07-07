@@ -250,6 +250,7 @@ void cg::renderer::dx12_renderer::load_assets()
 				vertex_buffer_size,
 				vertex_buffer_name
 		);
+		copy_data(vertex_buffer_data->get_data(),vertex_buffer_size, vertex_buffers[i]);
 	}
 
 	for(size_t i = 0; i < model->get_index_buffers().size(); i++)
@@ -264,12 +265,17 @@ void cg::renderer::dx12_renderer::load_assets()
 				index_buffer_size,
 				index_buffer_name
 		);
+		copy_data(index_buffer_data->get_data(), index_buffer_size, index_buffers[i]);
 	}
-
-	std::wstring const_buffer_name(L"Constant buffer");
-
-	create_resource_on_upload_heap(constant_buffer, 64 * 1028, const_buffer_name);
-	// TODO Lab 3.03. Copy resource data to suitable resources
+	std::wstring constant_buffer_name(L"Constant buffer");
+	create_resource_on_upload_heap(constant_buffer, 64 * 1028, constant_buffer_name);
+	copy_data(&cb, sizeof(cb), constant_buffer);
+	CD3DX12_RANGE read_range(0, 0);
+	THROW_IF_FAILED(constant_buffer->Map(
+			0,
+			&read_range,
+			reinterpret_cast<void**>(&constant_buffer_data_begin)
+					));
 	// TODO Lab 3.04. Create a descriptor heap for a constant buffer
 	// TODO Lab 3.04. Create a constant buffer view
 }
@@ -295,19 +301,37 @@ void cg::renderer::dx12_renderer::wait_for_gpu()
 
 void cg::renderer::descriptor_heap::create_heap(ComPtr<ID3D12Device>& device, D3D12_DESCRIPTOR_HEAP_TYPE type, UINT number, D3D12_DESCRIPTOR_HEAP_FLAGS flags)
 {
-	// TODO Lab 3.04. Implement `create_heap`, `get_cpu_descriptor_handle`, `get_gpu_descriptor_handle`, and `get` methods of `cg::renderer::descriptor_heap`
+	D3D12_DESCRIPTOR_HEAP_DESC heap_descriptor = {};
+	heap_descriptor.NumDescriptors = number;
+	heap_descriptor.Type = type;
+	heap_descriptor.Flags = flags;
+
+	THROW_IF_FAILED(device->CreateDescriptorHeap(
+			&heap_descriptor,
+			IID_PPV_ARGS(&heap)
+					));
+
+	descriptor_size = device->GetDescriptorHandleIncrementSize(type);
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE cg::renderer::descriptor_heap::get_cpu_descriptor_handle(UINT index) const
 {
-	// TODO Lab 3.04. Implement `create_heap`, `get_cpu_descriptor_handle`, `get_gpu_descriptor_handle`, and `get` methods of `cg::renderer::descriptor_heap`
+	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
+			heap->GetCPUDescriptorHandleForHeapStart(),
+			static_cast<INT>(index),
+			descriptor_size
+	);
 }
 
 D3D12_GPU_DESCRIPTOR_HANDLE cg::renderer::descriptor_heap::get_gpu_descriptor_handle(UINT index) const
 {
-	// TODO Lab 3.04. Implement `create_heap`, `get_cpu_descriptor_handle`, `get_gpu_descriptor_handle`, and `get` methods of `cg::renderer::descriptor_heap`
+	return CD3DX12_GPU_DESCRIPTOR_HANDLE(
+			heap->GetGPUDescriptorHandleForHeapStart(),
+			static_cast<INT>(index),
+			descriptor_size
+	);
 }
 ID3D12DescriptorHeap* cg::renderer::descriptor_heap::get() const
 {
-	// TODO Lab 3.04. Implement `create_heap`, `get_cpu_descriptor_handle`, `get_gpu_descriptor_handle`, and `get` methods of `cg::renderer::descriptor_heap`
+	return heap.Get();
 }
